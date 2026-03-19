@@ -1,0 +1,56 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String   @unique
+  name      String?
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  matchesAsTeam1Player1 Match[] @relation("team1player1")
+  matchesAsTeam1Player2 Match[] @relation("team1player2")
+  matchesAsTeam2Player1 Match[] @relation("team2player1")
+  matchesAsTeam2Player2 Match[] @relation("team2player2")
+}
+
+model Match {
+  id             String   @id @default(cuid())
+  date           DateTime
+  team1player1   User     @relation("team1player1", fields: [team1player1Id], references: [id])
+  team1player1Id String
+  team1player2   User     @relation("team1player2", fields: [team1player2Id], references: [id])
+  team1player2Id String
+  team2player1   User     @relation("team2player1", fields: [team2player1Id], references: [id])
+  team2player1Id String
+  team2player2   User     @relation("team2player2", fields: [team2player2Id], references: [id])
+  team2player2Id String
+  set1team1      Int
+  set1team2      Int
+  set2team1      Int
+  set2team2      Int
+  set3team1      Int?
+  set3team2      Int?
+  winnerTeam     Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([team1player1Id])
+  @@index([team1player2Id])
+  @@index([team2player1Id])
+  @@index([team2player2Id])
+}
