@@ -11,7 +11,10 @@ export default function DeleteMatchButton({ id }: { id: string }) {
       }}
     >
       <input type="hidden" name="id" value={id} />
-      <button type="submit" className="text-xs text-red-400 hover:text-red-300">
+      <button
+        type="submit"
+        className="text-xs text-chalk-muted transition-colors hover:text-rose"
+      >
         Eliminar
       </button>
     </form>

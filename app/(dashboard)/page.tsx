@@ -14,50 +14,76 @@ export default async function DashboardPage() {
     }),
   ]);
 
-  function formatScore(match: NonNullable<typeof lastMatch>) {
-    const sets = [
-      `${match.set1team1}-${match.set1team2}`,
-      `${match.set2team1}-${match.set2team2}`,
-    ];
-    if (match.set3team1 !== null && match.set3team2 !== null) {
-      sets.push(`${match.set3team1}-${match.set3team2}`);
-    }
-    return sets.join("  ");
-  }
-
   return (
-    <div>
-      <h1 className="mb-6 text-xl font-semibold text-white">Dashboard</h1>
+    <div className="space-y-6">
+      <h1 className="text-lg font-semibold text-chalk">Inicio</h1>
+
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-5">
-          <p className="text-sm text-zinc-400">Total partidos</p>
-          <p className="mt-1 text-3xl font-bold text-white">{totalMatches}</p>
+        {/* Total matches */}
+        <div className="rounded-lg border border-line bg-surface p-5">
+          <p className="text-xs font-medium uppercase tracking-wider text-chalk-muted">
+            Partidos jugados
+          </p>
+          <p className="mt-2 font-mono text-4xl font-bold tabular-nums text-chalk">
+            {totalMatches}
+          </p>
         </div>
 
-        <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-5">
-          <p className="text-sm text-zinc-400">Último partido</p>
+        {/* Last match scoreboard */}
+        <div className="rounded-lg border border-line bg-surface p-5">
+          <p className="text-xs font-medium uppercase tracking-wider text-chalk-muted">
+            Último partido
+          </p>
           {lastMatch ? (
-            <div className="mt-2">
-              <p className="text-sm font-medium text-white">
-                <span className={lastMatch.winnerTeam === 1 ? "text-green-400" : ""}>
-                  {lastMatch.team1player1.name} / {lastMatch.team1player2.name}
-                </span>
-                <span className="mx-2 text-zinc-500">vs</span>
-                <span className={lastMatch.winnerTeam === 2 ? "text-green-400" : ""}>
-                  {lastMatch.team2player1.name} / {lastMatch.team2player2.name}
-                </span>
-              </p>
-              <p className="mt-1 font-mono text-sm text-zinc-300">
-                {formatScore(lastMatch)}
-              </p>
-              <p className="mt-1 text-xs text-zinc-500">
-                {new Date(lastMatch.date).toLocaleDateString("es-AR")}
+            <div className="mt-3 space-y-1">
+              <ScoreRow
+                name={`${lastMatch.team1player1.name} / ${lastMatch.team1player2.name}`}
+                scores={[lastMatch.set1team1, lastMatch.set2team1, lastMatch.set3team1]}
+                won={lastMatch.winnerTeam === 1}
+              />
+              <ScoreRow
+                name={`${lastMatch.team2player1.name} / ${lastMatch.team2player2.name}`}
+                scores={[lastMatch.set1team2, lastMatch.set2team2, lastMatch.set3team2]}
+                won={lastMatch.winnerTeam === 2}
+              />
+              <p className="pt-1 text-xs text-chalk-muted">
+                {new Date(lastMatch.date).toLocaleDateString("es-AR", {
+                  day: "numeric",
+                  month: "short",
+                })}
               </p>
             </div>
           ) : (
-            <p className="mt-2 text-sm text-zinc-500">Sin partidos aún</p>
+            <p className="mt-3 text-sm text-chalk-muted">Sin partidos aún</p>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function ScoreRow({
+  name,
+  scores,
+  won,
+}: {
+  name: string;
+  scores: [number, number, number | null];
+  won: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className={`truncate text-sm font-medium ${won ? "text-mint" : "text-chalk-secondary"}`}>
+        {name}
+      </span>
+      <div className="flex gap-3 font-mono text-sm tabular-nums">
+        {scores.map((s, i) =>
+          s !== null ? (
+            <span key={i} className={won ? "text-chalk" : "text-chalk-muted"}>
+              {s}
+            </span>
+          ) : null
+        )}
       </div>
     </div>
   );

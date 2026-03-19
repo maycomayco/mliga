@@ -7,34 +7,43 @@ export default async function UsersPage() {
   });
 
   return (
-    <div>
-      <h1 className="mb-6 text-xl font-semibold text-white">Usuarios</h1>
-      <div className="overflow-hidden rounded-lg border border-zinc-800">
+    <div className="space-y-6">
+      <h1 className="text-lg font-semibold text-chalk">Jugadores</h1>
+
+      <div className="overflow-hidden rounded-lg border border-line">
         <table className="w-full text-sm">
-          <thead className="bg-zinc-800">
-            <tr>
-              <th className="px-4 py-3 text-left font-medium text-zinc-300">Nombre</th>
-              <th className="px-4 py-3 text-left font-medium text-zinc-300">Email</th>
-              <th className="hidden px-4 py-3 text-left font-medium text-zinc-300 sm:table-cell">Username</th>
-              <th className="px-4 py-3 text-left font-medium text-zinc-300">Rol</th>
+          <thead>
+            <tr className="border-b border-line bg-surface">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-chalk-muted">
+                Nombre
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-chalk-muted">
+                Email
+              </th>
+              <th className="hidden px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-chalk-muted sm:table-cell">
+                Username
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-chalk-muted">
+                Rol
+              </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-800">
+          <tbody className="divide-y divide-line-soft">
             {users.map((user) => (
-              <tr key={user.id} className="bg-zinc-900">
-                <td className="px-4 py-3 font-medium text-white">
+              <tr key={user.id} className="transition-colors hover:bg-surface">
+                <td className="px-4 py-3 font-medium text-chalk">
                   {user.name ?? "(sin nombre)"}
                 </td>
-                <td className="px-4 py-3 text-zinc-400">{user.email}</td>
-                <td className="hidden px-4 py-3 text-zinc-400 sm:table-cell">
+                <td className="px-4 py-3 text-chalk-secondary">{user.email}</td>
+                <td className="hidden px-4 py-3 font-mono text-xs text-chalk-muted sm:table-cell">
                   {user.username}
                 </td>
                 <td className="px-4 py-3">
                   <span
-                    className={`rounded px-2 py-0.5 text-xs font-medium ${
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
                       user.role === "ADMIN"
-                        ? "bg-violet-900 text-violet-300"
-                        : "bg-zinc-800 text-zinc-400"
+                        ? "bg-mint-dimmed text-mint"
+                        : "bg-surface-raised text-chalk-muted"
                     }`}
                   >
                     {user.role}

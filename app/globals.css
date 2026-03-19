@@ -1,26 +1,64 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Canvas */
+  --pitch: 240 10% 5.5%;
+  --surface: 160 6% 9%;
+  --surface-raised: 160 6% 12%;
+  --surface-hover: 160 6% 15%;
+
+  /* Borders */
+  --line: 160 10% 40%;
+  --line-soft: 160 10% 25%;
+
+  /* Text */
+  --chalk: 0 0% 93%;
+  --chalk-secondary: 215 20% 65%;
+  --chalk-muted: 215 12% 42%;
+
+  /* Accent — mint pastel */
+  --mint: 162 45% 62%;
+  --mint-dimmed: 162 30% 18%;
+
+  /* Semantic */
+  --rose: 350 55% 68%;
+  --rose-dimmed: 350 30% 16%;
+  --amber: 38 55% 62%;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: hsl(var(--pitch));
+  --color-foreground: hsl(var(--chalk));
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* surfaces */
+  --color-pitch: hsl(var(--pitch));
+  --color-surface: hsl(var(--surface));
+  --color-surface-raised: hsl(var(--surface-raised));
+  --color-surface-hover: hsl(var(--surface-hover));
+
+  /* borders */
+  --color-line: hsl(var(--line) / 0.25);
+  --color-line-soft: hsl(var(--line-soft) / 0.15);
+
+  /* text */
+  --color-chalk: hsl(var(--chalk));
+  --color-chalk-secondary: hsl(var(--chalk-secondary));
+  --color-chalk-muted: hsl(var(--chalk-muted));
+
+  /* accent */
+  --color-mint: hsl(var(--mint));
+  --color-mint-dimmed: hsl(var(--mint-dimmed));
+
+  /* semantic */
+  --color-rose: hsl(var(--rose));
+  --color-rose-dimmed: hsl(var(--rose-dimmed));
+  --color-amber: hsl(var(--amber));
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: hsl(var(--pitch));
+  color: hsl(var(--chalk));
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
 }

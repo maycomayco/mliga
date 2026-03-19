@@ -26,10 +26,10 @@ type Props = {
 const initialState: ActionState = {};
 
 const inputClass =
-  "w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder-zinc-500 focus:border-violet-500 focus:outline-none";
+  "w-full rounded-lg border border-line bg-pitch px-3 py-2 text-sm text-chalk placeholder:text-chalk-muted focus:border-mint focus:outline-none transition-colors";
 const selectClass =
-  "w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white focus:border-violet-500 focus:outline-none";
-const labelClass = "mb-1 block text-xs font-medium text-zinc-400";
+  "w-full rounded-lg border border-line bg-pitch px-3 py-2 text-sm text-chalk focus:border-mint focus:outline-none transition-colors";
+const labelClass = "mb-1.5 block text-xs font-medium uppercase tracking-wider text-chalk-muted";
 
 export default function MatchForm({ action, players, defaultValues }: Props) {
   const [state, formAction, pending] = useActionState(action, initialState);
@@ -37,7 +37,7 @@ export default function MatchForm({ action, players, defaultValues }: Props) {
   function fieldError(field: string) {
     const errs = state.errors?.[field];
     if (!errs?.length) return null;
-    return <p className="mt-1 text-xs text-red-400">{errs[0]}</p>;
+    return <p className="mt-1.5 text-xs text-rose">{errs[0]}</p>;
   }
 
   return (
@@ -59,12 +59,14 @@ export default function MatchForm({ action, players, defaultValues }: Props) {
       {/* Teams */}
       <div className="grid gap-4 sm:grid-cols-2">
         {/* Team 1 */}
-        <div className="space-y-3 rounded-lg border border-zinc-800 p-4">
-          <p className="text-sm font-semibold text-white">Equipo 1</p>
+        <div className="space-y-3 rounded-lg border border-line bg-surface p-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-chalk-secondary">
+            Equipo 1
+          </p>
           <div>
             <label htmlFor="team1player1Id" className={labelClass}>Jugador 1</label>
             <select id="team1player1Id" name="team1player1Id" required defaultValue={defaultValues?.team1player1Id ?? ""} className={selectClass}>
-              <option value="">Seleccionar jugador</option>
+              <option value="">Seleccionar</option>
               {players.map((p) => (
                 <option key={p.id} value={p.id}>{p.name ?? p.id}</option>
               ))}
@@ -73,7 +75,7 @@ export default function MatchForm({ action, players, defaultValues }: Props) {
           <div>
             <label htmlFor="team1player2Id" className={labelClass}>Jugador 2</label>
             <select id="team1player2Id" name="team1player2Id" required defaultValue={defaultValues?.team1player2Id ?? ""} className={selectClass}>
-              <option value="">Seleccionar jugador</option>
+              <option value="">Seleccionar</option>
               {players.map((p) => (
                 <option key={p.id} value={p.id}>{p.name ?? p.id}</option>
               ))}
@@ -83,12 +85,14 @@ export default function MatchForm({ action, players, defaultValues }: Props) {
         </div>
 
         {/* Team 2 */}
-        <div className="space-y-3 rounded-lg border border-zinc-800 p-4">
-          <p className="text-sm font-semibold text-white">Equipo 2</p>
+        <div className="space-y-3 rounded-lg border border-line bg-surface p-4">
+          <p className="text-xs font-semibold uppercase tracking-wider text-chalk-secondary">
+            Equipo 2
+          </p>
           <div>
             <label htmlFor="team2player1Id" className={labelClass}>Jugador 1</label>
             <select id="team2player1Id" name="team2player1Id" required defaultValue={defaultValues?.team2player1Id ?? ""} className={selectClass}>
-              <option value="">Seleccionar jugador</option>
+              <option value="">Seleccionar</option>
               {players.map((p) => (
                 <option key={p.id} value={p.id}>{p.name ?? p.id}</option>
               ))}
@@ -97,7 +101,7 @@ export default function MatchForm({ action, players, defaultValues }: Props) {
           <div>
             <label htmlFor="team2player2Id" className={labelClass}>Jugador 2</label>
             <select id="team2player2Id" name="team2player2Id" required defaultValue={defaultValues?.team2player2Id ?? ""} className={selectClass}>
-              <option value="">Seleccionar jugador</option>
+              <option value="">Seleccionar</option>
               {players.map((p) => (
                 <option key={p.id} value={p.id}>{p.name ?? p.id}</option>
               ))}
@@ -108,48 +112,63 @@ export default function MatchForm({ action, players, defaultValues }: Props) {
 
       {/* Scores */}
       <div className="space-y-4">
-        {/* Set 1 */}
-        <div>
-          <p className={labelClass}>Set 1</p>
-          <div className="flex items-center gap-3">
-            <input name="set1team1" type="number" min={0} required defaultValue={defaultValues?.set1team1 ?? 0} className={`${inputClass} w-20 text-center`} />
-            <span className="text-zinc-500">–</span>
-            <input name="set1team2" type="number" min={0} required defaultValue={defaultValues?.set1team2 ?? 0} className={`${inputClass} w-20 text-center`} />
-          </div>
-          {fieldError("set1team1")}
-        </div>
-
-        {/* Set 2 */}
-        <div>
-          <p className={labelClass}>Set 2</p>
-          <div className="flex items-center gap-3">
-            <input name="set2team1" type="number" min={0} required defaultValue={defaultValues?.set2team1 ?? 0} className={`${inputClass} w-20 text-center`} />
-            <span className="text-zinc-500">–</span>
-            <input name="set2team2" type="number" min={0} required defaultValue={defaultValues?.set2team2 ?? 0} className={`${inputClass} w-20 text-center`} />
-          </div>
-        </div>
-
-        {/* Set 3 */}
-        <div>
-          <p className={labelClass}>Set 3 <span className="text-zinc-600">(solo si sets 1-1)</span></p>
-          <div className="flex items-center gap-3">
-            <input name="set3team1" type="number" min={0} defaultValue={defaultValues?.set3team1 ?? 0} className={`${inputClass} w-20 text-center`} />
-            <span className="text-zinc-500">–</span>
-            <input name="set3team2" type="number" min={0} defaultValue={defaultValues?.set3team2 ?? 0} className={`${inputClass} w-20 text-center`} />
-          </div>
-        </div>
+        <ScoreInput label="Set 1" name1="set1team1" name2="set1team2" default1={defaultValues?.set1team1} default2={defaultValues?.set1team2} />
+        <ScoreInput label="Set 2" name1="set2team1" name2="set2team2" default1={defaultValues?.set2team1} default2={defaultValues?.set2team2} />
+        <ScoreInput label="Set 3" hint="solo si sets 1-1" name1="set3team1" name2="set3team2" default1={defaultValues?.set3team1} default2={defaultValues?.set3team2} />
       </div>
 
       {/* General error */}
-      {state.message && <p className="text-sm text-red-400">{state.message}</p>}
+      {state.message && <p className="text-sm text-rose">{state.message}</p>}
 
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white hover:bg-violet-500 disabled:opacity-50"
+        className="w-full rounded-lg bg-mint px-4 py-2.5 text-sm font-semibold text-pitch transition-opacity hover:opacity-90 disabled:opacity-50"
       >
         {pending ? "Guardando..." : "Guardar partido"}
       </button>
     </form>
+  );
+}
+
+function ScoreInput({
+  label,
+  hint,
+  name1,
+  name2,
+  default1,
+  default2,
+}: {
+  label: string;
+  hint?: string;
+  name1: string;
+  name2: string;
+  default1?: number | null;
+  default2?: number | null;
+}) {
+  return (
+    <div>
+      <p className={labelClass}>
+        {label}
+        {hint && <span className="ml-1.5 normal-case tracking-normal text-chalk-muted">({hint})</span>}
+      </p>
+      <div className="flex items-center gap-3">
+        <input
+          name={name1}
+          type="number"
+          min={0}
+          defaultValue={default1 ?? 0}
+          className={`${inputClass} w-20 text-center font-mono tabular-nums`}
+        />
+        <span className="text-chalk-muted">–</span>
+        <input
+          name={name2}
+          type="number"
+          min={0}
+          defaultValue={default2 ?? 0}
+          className={`${inputClass} w-20 text-center font-mono tabular-nums`}
+        />
+      </div>
+    </div>
   );
 }
