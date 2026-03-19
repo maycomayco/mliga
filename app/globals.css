@@ -1,64 +1,36 @@
 @import "tailwindcss";
 
-:root {
-  /* Canvas */
-  --pitch: 240 10% 5.5%;
-  --surface: 160 6% 9%;
-  --surface-raised: 160 6% 12%;
-  --surface-hover: 160 6% 15%;
-
-  /* Borders */
-  --line: 160 10% 40%;
-  --line-soft: 160 10% 25%;
-
-  /* Text */
-  --chalk: 0 0% 93%;
-  --chalk-secondary: 215 20% 65%;
-  --chalk-muted: 215 12% 42%;
-
-  /* Accent — mint pastel */
-  --mint: 162 45% 62%;
-  --mint-dimmed: 162 30% 18%;
-
-  /* Semantic */
-  --rose: 350 55% 68%;
-  --rose-dimmed: 350 30% 16%;
-  --amber: 38 55% 62%;
-}
-
 @theme inline {
-  --color-background: hsl(var(--pitch));
-  --color-foreground: hsl(var(--chalk));
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* surfaces */
-  --color-pitch: hsl(var(--pitch));
-  --color-surface: hsl(var(--surface));
-  --color-surface-raised: hsl(var(--surface-raised));
-  --color-surface-hover: hsl(var(--surface-hover));
+  /* Canvas */
+  --color-pitch: oklch(0.145 0.01 260);
+  --color-surface: oklch(0.18 0.01 160);
+  --color-surface-raised: oklch(0.22 0.01 160);
+  --color-surface-hover: oklch(0.26 0.01 160);
 
-  /* borders */
-  --color-line: hsl(var(--line) / 0.25);
-  --color-line-soft: hsl(var(--line-soft) / 0.15);
+  /* Borders */
+  --color-line: oklch(0.45 0.02 160 / 0.25);
+  --color-line-soft: oklch(0.35 0.02 160 / 0.15);
 
-  /* text */
-  --color-chalk: hsl(var(--chalk));
-  --color-chalk-secondary: hsl(var(--chalk-secondary));
-  --color-chalk-muted: hsl(var(--chalk-muted));
+  /* Text */
+  --color-chalk: oklch(0.93 0 0);
+  --color-chalk-secondary: oklch(0.65 0.03 250);
+  --color-chalk-muted: oklch(0.48 0.02 250);
 
-  /* accent */
-  --color-mint: hsl(var(--mint));
-  --color-mint-dimmed: hsl(var(--mint-dimmed));
+  /* Accent — mint pastel */
+  --color-mint: oklch(0.72 0.12 165);
+  --color-mint-dimmed: oklch(0.28 0.04 165);
 
-  /* semantic */
-  --color-rose: hsl(var(--rose));
-  --color-rose-dimmed: hsl(var(--rose-dimmed));
-  --color-amber: hsl(var(--amber));
+  /* Semantic */
+  --color-rose: oklch(0.7 0.12 10);
+  --color-rose-dimmed: oklch(0.25 0.05 10);
+  --color-amber: oklch(0.72 0.12 70);
 }
 
 body {
-  background: hsl(var(--pitch));
-  color: hsl(var(--chalk));
+  background: var(--color-pitch);
+  color: var(--color-chalk);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
