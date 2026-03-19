@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 import type { ActionState } from "@/app/(dashboard)/matches/actions";
 
 type Player = { id: string; name: string | null };
@@ -33,7 +33,6 @@ const labelClass = "mb-1 block text-xs font-medium text-zinc-400";
 
 export default function MatchForm({ action, players, defaultValues }: Props) {
   const [state, formAction, pending] = useActionState(action, initialState);
-  const [showSet3, setShowSet3] = useState(defaultValues?.set3team1 != null);
 
   function fieldError(field: string) {
     const errs = state.errors?.[field];
@@ -130,29 +129,15 @@ export default function MatchForm({ action, players, defaultValues }: Props) {
           </div>
         </div>
 
-        {/* Set 3 toggle */}
-        <label className="flex cursor-pointer items-center gap-2">
-          <input
-            type="checkbox"
-            checked={showSet3}
-            onChange={(e) => setShowSet3(e.target.checked)}
-            className="h-4 w-4 rounded border-zinc-600 bg-zinc-800"
-          />
-          <span className="text-sm text-zinc-400">Agregar Set 3</span>
-        </label>
-
         {/* Set 3 */}
-        {showSet3 && (
-          <div>
-            <p className={labelClass}>Set 3</p>
-            <div className="flex items-center gap-3">
-              <input name="set3team1" type="number" min={0} defaultValue={defaultValues?.set3team1 ?? 0} className={`${inputClass} w-20 text-center`} />
-              <span className="text-zinc-500">–</span>
-              <input name="set3team2" type="number" min={0} defaultValue={defaultValues?.set3team2 ?? 0} className={`${inputClass} w-20 text-center`} />
-            </div>
-            {fieldError("set3team1")}
+        <div>
+          <p className={labelClass}>Set 3 <span className="text-zinc-600">(solo si sets 1-1)</span></p>
+          <div className="flex items-center gap-3">
+            <input name="set3team1" type="number" min={0} defaultValue={defaultValues?.set3team1 ?? 0} className={`${inputClass} w-20 text-center`} />
+            <span className="text-zinc-500">–</span>
+            <input name="set3team2" type="number" min={0} defaultValue={defaultValues?.set3team2 ?? 0} className={`${inputClass} w-20 text-center`} />
           </div>
-        )}
+        </div>
       </div>
 
       {/* General error */}

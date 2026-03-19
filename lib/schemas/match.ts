@@ -11,8 +11,8 @@ export const matchSchema = z
     set1team2: z.coerce.number().int().min(0, "Mínimo 0"),
     set2team1: z.coerce.number().int().min(0, "Mínimo 0"),
     set2team2: z.coerce.number().int().min(0, "Mínimo 0"),
-    set3team1: z.coerce.number().int().min(0, "Mínimo 0").optional(),
-    set3team2: z.coerce.number().int().min(0, "Mínimo 0").optional(),
+    set3team1: z.coerce.number().int().min(0, "Mínimo 0"),
+    set3team2: z.coerce.number().int().min(0, "Mínimo 0"),
   })
   .refine(
     (d) =>
@@ -23,24 +23,6 @@ export const matchSchema = z
         d.team2player2Id,
       ]).size === 4,
     { message: "Los 4 jugadores deben ser distintos", path: ["team1player1Id"] }
-  )
-  .refine(
-    (d) => (d.set3team1 === undefined) === (d.set3team2 === undefined),
-    { message: "Ambos scores del set 3 son requeridos", path: ["set3team1"] }
-  )
-  .refine(
-    (d) => {
-      const team1WonSet1 = d.set1team1 > d.set1team2;
-      const team1WonSet2 = d.set2team1 > d.set2team2;
-      if (team1WonSet1 !== team1WonSet2) {
-        return d.set3team1 !== undefined && d.set3team2 !== undefined;
-      }
-      return true;
-    },
-    {
-      message: "El set 3 es obligatorio cuando los sets están 1-1",
-      path: ["set3team1"],
-    }
   );
 
 export type MatchInput = z.infer<typeof matchSchema>;
@@ -55,7 +37,9 @@ export function calculateWinnerTeam(data: MatchInput): number {
   if (data.set2team1 > data.set2team2) team1Sets++;
   else team2Sets++;
 
-  if (data.set3team1 !== undefined && data.set3team2 !== undefined) {
+  // Solo contar set 3 si los primeros dos sets quedaron 1-1
+  const set3Needed = team1Sets === 1 && team2Sets === 1;
+  if (set3Needed) {
     if (data.set3team1 > data.set3team2) team1Sets++;
     else team2Sets++;
   }

@@ -11,10 +11,6 @@ export type ActionState = {
 };
 
 function parseMatchFormData(formData: FormData) {
-  // Use explicit null check so "0" is preserved (not treated as falsy)
-  const set3team1Raw = formData.get("set3team1");
-  const set3team2Raw = formData.get("set3team2");
-
   return {
     date: formData.get("date"),
     team1player1Id: formData.get("team1player1Id"),
@@ -25,9 +21,15 @@ function parseMatchFormData(formData: FormData) {
     set1team2: formData.get("set1team2"),
     set2team1: formData.get("set2team1"),
     set2team2: formData.get("set2team2"),
-    set3team1: set3team1Raw !== null ? set3team1Raw : undefined,
-    set3team2: set3team2Raw !== null ? set3team2Raw : undefined,
+    set3team1: formData.get("set3team1"),
+    set3team2: formData.get("set3team2"),
   };
+}
+
+function set3Needed(data: { set1team1: number; set1team2: number; set2team1: number; set2team2: number }) {
+  const team1WonSet1 = data.set1team1 > data.set1team2;
+  const team1WonSet2 = data.set2team1 > data.set2team2;
+  return team1WonSet1 !== team1WonSet2;
 }
 
 export async function createMatch(
@@ -42,6 +44,7 @@ export async function createMatch(
 
   const data = result.data;
   const winnerTeam = calculateWinnerTeam(data);
+  const saveSet3 = set3Needed(data);
 
   await prisma.match.create({
     data: {
@@ -54,8 +57,8 @@ export async function createMatch(
       set1team2: data.set1team2,
       set2team1: data.set2team1,
       set2team2: data.set2team2,
-      set3team1: data.set3team1 ?? null,
-      set3team2: data.set3team2 ?? null,
+      set3team1: saveSet3 ? data.set3team1 : null,
+      set3team2: saveSet3 ? data.set3team2 : null,
       winnerTeam,
     },
   });
@@ -78,6 +81,7 @@ export async function updateMatch(
 
   const data = result.data;
   const winnerTeam = calculateWinnerTeam(data);
+  const saveSet3 = set3Needed(data);
 
   await prisma.match.update({
     where: { id },
@@ -91,8 +95,8 @@ export async function updateMatch(
       set1team2: data.set1team2,
       set2team1: data.set2team1,
       set2team2: data.set2team2,
-      set3team1: data.set3team1 ?? null,
-      set3team2: data.set3team2 ?? null,
+      set3team1: saveSet3 ? data.set3team1 : null,
+      set3team2: saveSet3 ? data.set3team2 : null,
       winnerTeam,
     },
   });
