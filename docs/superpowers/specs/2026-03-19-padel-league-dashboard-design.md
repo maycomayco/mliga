@@ -32,6 +32,11 @@ model Match {
   winnerTeam    Int      // 1 o 2
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@index([team1player1Id])
+  @@index([team1player2Id])
+  @@index([team2player1Id])
+  @@index([team2player2Id])
 }
 ```
 
@@ -47,7 +52,12 @@ model User {
 }
 ```
 
-`winnerTeam` se calcula automaticamente al crear/editar el partido contando sets ganados.
+`winnerTeam` se calcula automaticamente al crear/editar el partido: el equipo que gana 2 de 3 sets gana el partido. Un set se gana teniendo mayor cantidad de games. Si tras 2 sets hay empate 1-1, el set 3 es obligatorio. No se aplican reglas estrictas de scoring de padel (ej. llegar a 6) — los scores son libres para flexibilidad.
+
+## Prerequisitos
+
+- Agregar `zod` como dependencia: `pnpm add zod`
+- Eliminar `app/page.tsx` existente (conflicto de ruta con `(dashboard)/page.tsx` que tambien mapea a `/`)
 
 ## Estructura de rutas
 
@@ -87,7 +97,9 @@ Tabla simple con nombre, email, rol. Solo lectura.
 
 ### Lista (`/matches`)
 - Server Component con lista de partidos mostrando equipos, resultado, fecha
+- Ordenados por fecha descendente (mas reciente primero)
 - Botones: "Nuevo partido", "Editar", "Eliminar" por partido
+- No hay pagina de detalle individual — la lista muestra toda la informacion necesaria
 
 ### Crear (`/matches/new`)
 - Server Component page que carga usuarios y pasa a MatchForm
@@ -116,6 +128,8 @@ Schema en `lib/schemas/match.ts`:
 - `team1player1Id`, `team1player2Id`, `team2player1Id`, `team2player2Id`: cuid, los 4 distintos
 - `set1team1`, `set1team2`, `set2team1`, `set2team2`: int >= 0
 - `set3team1`, `set3team2`: int >= 0, opcionales (ambos presentes o ambos ausentes)
+- Validacion cruzada: si sets estan 1-1, set 3 es obligatorio
+- Scores libres (sin minimo de 6 games ni reglas estrictas de padel)
 
 ## Server Actions
 

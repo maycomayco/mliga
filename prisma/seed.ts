@@ -1,0 +1,85 @@
+import { PrismaClient, Role } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { scryptSync, randomBytes } from "crypto";
+import "dotenv/config";
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const prisma = new PrismaClient({ adapter });
+
+function hashPassword(password: string): string {
+  const salt = randomBytes(16).toString("hex");
+  const hash = scryptSync(password, salt, 64).toString("hex");
+  return `${salt}:${hash}`;
+}
+
+const users: {
+  email: string;
+  name: string;
+  username: string;
+  password: string;
+  role: Role;
+}[] = [
+  {
+    email: "maycobarale@gmail.com",
+    name: "Mayco",
+    username: "mayco",
+    password: "0112358",
+    role: Role.ADMIN,
+  },
+  {
+    email: "jano@aaa.com",
+    name: "Jano",
+    username: "jano.vino",
+    password: "0123456",
+    role: Role.USER,
+  },
+  {
+    email: "victor@aaa.com",
+    name: "Victor",
+    username: "victor.voleadefondo",
+    password: "0123456",
+    role: Role.USER,
+  },
+  {
+    email: "santi@aaa.com",
+    name: "Santi",
+    username: "santi.profe",
+    password: "0123456",
+    role: Role.USER,
+  },
+  {
+    email: "lucas@aaa.com",
+    name: "Lucas",
+    username: "lucas.sinescalas",
+    password: "0123456",
+    role: Role.USER,
+  },
+];
+
+async function main() {
+  console.log("Seeding database...");
+
+  for (const user of users) {
+    await prisma.user.upsert({
+      where: { email: user.email },
+      update: {},
+      create: {
+        email: user.email,
+        name: user.name,
+        username: user.username,
+        password: hashPassword(user.password),
+        role: user.role,
+      },
+    });
+    console.log(`  ✓ ${user.name} (${user.email})`);
+  }
+
+  console.log("Done.");
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(() => prisma.$disconnect());
