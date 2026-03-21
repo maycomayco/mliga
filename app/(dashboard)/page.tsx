@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
 export default async function DashboardPage() {
-  const [totalMatches, lastMatch] = await Promise.all([
+  const [totalMatches, lastMatch, matches, users] = await Promise.all([
     prisma.match.count(),
     prisma.match.findFirst({
       orderBy: { date: "desc" },
@@ -12,7 +13,46 @@ export default async function DashboardPage() {
         team2player2: { select: { name: true } },
       },
     }),
+    prisma.match.findMany({
+      select: {
+        team1player1Id: true,
+        team1player2Id: true,
+        team2player1Id: true,
+        team2player2Id: true,
+        set1team1: true,
+        set1team2: true,
+        set2team1: true,
+        set2team2: true,
+        set3team1: true,
+        set3team2: true,
+      },
+    }),
+    prisma.user.findMany({ select: { id: true, name: true } }),
   ]);
+
+  // Build standings
+  const playerMap = new Map<string, { name: string; sets: number }>();
+  for (const user of users) {
+    playerMap.set(user.id, { name: user.name ?? "(sin nombre)", sets: 0 });
+  }
+  for (const m of matches) {
+    let t1 = 0, t2 = 0;
+    if (m.set1team1 > m.set1team2) t1++; else if (m.set1team2 > m.set1team1) t2++;
+    if (m.set2team1 > m.set2team2) t1++; else if (m.set2team2 > m.set2team1) t2++;
+    if (m.set3team1 != null && m.set3team2 != null) {
+      if (m.set3team1 > m.set3team2) t1++; else if (m.set3team2 > m.set3team1) t2++;
+    }
+    for (const id of [m.team1player1Id, m.team1player2Id]) {
+      const p = playerMap.get(id); if (p) p.sets += t1;
+    }
+    for (const id of [m.team2player1Id, m.team2player2Id]) {
+      const p = playerMap.get(id); if (p) p.sets += t2;
+    }
+  }
+  const topStandings = Array.from(playerMap.values())
+    .filter((p) => p.sets > 0)
+    .sort((a, b) => b.sets - a.sets)
+    .slice(0, 5);
 
   return (
     <div className="space-y-6">
@@ -57,6 +97,36 @@ export default async function DashboardPage() {
             <p className="mt-3 text-sm text-chalk-muted">Sin partidos aún</p>
           )}
         </div>
+      </div>
+
+      {/* Top standings */}
+      <div className="rounded-lg border border-line bg-surface p-5">
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-medium uppercase tracking-wider text-chalk-muted">
+            Posiciones
+          </p>
+          <Link href="/standings" className="text-xs text-mint hover:underline">
+            Ver todas
+          </Link>
+        </div>
+        {topStandings.length > 0 ? (
+          <div className="mt-3 space-y-2">
+            {topStandings.map((player, i) => (
+              <div key={i} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-5 text-center font-mono text-xs text-chalk-muted">{i + 1}</span>
+                  {i < 3 && <span className="inline-block h-2 w-2 rounded-full bg-mint" />}
+                  <span className="text-sm font-medium text-chalk">{player.name}</span>
+                </div>
+                <span className="font-mono text-sm font-semibold tabular-nums text-chalk">
+                  {player.sets}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-chalk-muted">Sin partidos aún</p>
+        )}
       </div>
     </div>
   );

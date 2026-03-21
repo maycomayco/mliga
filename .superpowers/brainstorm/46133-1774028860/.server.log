@@ -1,0 +1,6 @@
+{"type":"server-started","port":59071,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:59071","screen_dir":"/Users/mayco/dev/mliga/.superpowers/brainstorm/46133-1774028860"}
+{"type":"screen-added","file":"/Users/mayco/dev/mliga/.superpowers/brainstorm/46133-1774028860/mobile-nav-approaches.html"}
+{"source":"user-event","type":"click","text":"M-LIGA\n          \n            \n            \n            \n          \n        \n        \n        \n          Contenido de la página...\n        \n      \n      \n      \n        M-LIGA ✕\n        Inicio\n        Partidos\n        Posiciones\n        Asistencia\n        Jugadores\n      \n    \n    \n      A — Hamburger + drawer lateral\n      Nav colapsada en mobile, ☰ abre un panel deslizable. En desktop se mantiene el top nav horizontal actual.","choice":"a","id":null,"timestamp":1774028997956}
+{"type":"screen-added","file":"/Users/mayco/dev/mliga/.superpowers/brainstorm/46133-1774028860/waiting-1.html"}
+{"type":"screen-added","file":"/Users/mayco/dev/mliga/.superpowers/brainstorm/46133-1774028860/design-mockup.html"}
+{"type":"server-stopped","reason":"idle timeout"}

@@ -1,0 +1,98 @@
+<h2>Diseño del nav responsive</h2>
+<p class="subtitle">Así quedaría en mobile (drawer abierto y cerrado) y en desktop sin cambios.</p>
+
+<div class="split">
+
+  <!-- Mobile cerrado -->
+  <div class="mockup">
+    <div class="mockup-header">📱 Mobile — nav cerrada</div>
+    <div class="mockup-body" style="background:#1a1f1e;padding:0;border-radius:6px;overflow:hidden;">
+      <div style="font-family:monospace;font-size:11px;">
+        <div style="background:#1e2422;border-bottom:1px solid #2a3330;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#5eead4;font-weight:bold;">M-LIGA</span>
+          <button style="background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:3.5px;padding:2px;">
+            <div style="width:18px;height:2px;background:#9ca3af;border-radius:1px;"></div>
+            <div style="width:18px;height:2px;background:#9ca3af;border-radius:1px;"></div>
+            <div style="width:18px;height:2px;background:#9ca3af;border-radius:1px;"></div>
+          </button>
+        </div>
+        <div style="padding:14px;color:#9ca3af;font-size:10px;">
+          <div style="background:#232928;border-radius:4px;padding:10px;margin-bottom:8px;color:#e2e8e4;">Partidos</div>
+          <div style="background:#2a3330;border-radius:4px;padding:8px;margin-bottom:6px;height:40px;"></div>
+          <div style="background:#2a3330;border-radius:4px;padding:8px;margin-bottom:6px;height:40px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile abierto -->
+  <div class="mockup">
+    <div class="mockup-header">📱 Mobile — drawer abierto</div>
+    <div class="mockup-body" style="background:#1a1f1e;padding:0;border-radius:6px;overflow:hidden;position:relative;">
+      <div style="font-family:monospace;font-size:11px;">
+        <div style="background:#1e2422;border-bottom:1px solid #2a3330;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#5eead4;font-weight:bold;">M-LIGA</span>
+          <span style="color:#9ca3af;font-size:14px;">✕</span>
+        </div>
+        <div style="padding:14px;color:#9ca3af;font-size:10px;filter:brightness(0.5);">
+          <div style="background:#232928;border-radius:4px;padding:10px;margin-bottom:8px;color:#e2e8e4;">Partidos</div>
+          <div style="background:#2a3330;border-radius:4px;padding:8px;margin-bottom:6px;height:40px;"></div>
+        </div>
+      </div>
+      <!-- Overlay backdrop -->
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);"></div>
+      <!-- Drawer -->
+      <div style="position:absolute;top:0;left:0;width:62%;height:100%;background:#1e2422;border-right:1px solid #2a3330;z-index:10;display:flex;flex-direction:column;">
+        <div style="padding:12px 16px;border-bottom:1px solid #2a3330;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#5eead4;font-weight:bold;font-size:11px;">M-LIGA</span>
+          <span style="color:#9ca3af;font-size:12px;">✕</span>
+        </div>
+        <nav style="display:flex;flex-direction:column;padding:8px 0;">
+          <div style="padding:10px 16px;font-size:11px;color:#9ca3af;">Inicio</div>
+          <div style="padding:10px 16px;font-size:11px;color:#e2e8e4;background:#2a3330;border-left:2px solid #5eead4;">Partidos</div>
+          <div style="padding:10px 16px;font-size:11px;color:#9ca3af;">Posiciones</div>
+          <div style="padding:10px 16px;font-size:11px;color:#9ca3af;">Asistencia</div>
+          <div style="padding:10px 16px;font-size:11px;color:#9ca3af;">Jugadores</div>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop sin cambios -->
+  <div class="mockup">
+    <div class="mockup-header">🖥 Desktop — sin cambios</div>
+    <div class="mockup-body" style="background:#1a1f1e;padding:0;border-radius:6px;overflow:hidden;">
+      <div style="font-family:monospace;font-size:11px;">
+        <div style="background:#1e2422;border-bottom:1px solid #2a3330;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#5eead4;font-weight:bold;">M-LIGA</span>
+          <nav style="display:flex;gap:2px;">
+            <span style="padding:4px 8px;font-size:9px;color:#9ca3af;">Inicio</span>
+            <span style="padding:4px 8px;font-size:9px;color:#e2e8e4;border-bottom:2px solid #5eead4;">Partidos</span>
+            <span style="padding:4px 8px;font-size:9px;color:#9ca3af;">Posiciones</span>
+            <span style="padding:4px 8px;font-size:9px;color:#9ca3af;">Asistencia</span>
+            <span style="padding:4px 8px;font-size:9px;color:#9ca3af;">Jugadores</span>
+          </nav>
+        </div>
+        <div style="padding:14px;color:#9ca3af;font-size:10px;">
+          <div style="background:#232928;border-radius:4px;padding:10px;margin-bottom:8px;color:#e2e8e4;">Partidos</div>
+          <div style="background:#2a3330;border-radius:4px;padding:8px;margin-bottom:6px;height:40px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section" style="margin-top:20px;">
+  <h3>Comportamiento</h3>
+  <ul style="font-size:13px;color:#9ca3af;line-height:1.8;list-style:disc;padding-left:20px;">
+    <li>Breakpoint <code>md</code> (768px): hamburger en mobile, tabs horizontales en desktop</li>
+    <li>Drawer desliza desde la <strong style="color:#e2e8e4;">izquierda</strong> con animación CSS (<code>translate-x</code>)</li>
+    <li>Backdrop semitransparente — click fuera cierra el drawer</li>
+    <li>Navegar a cualquier link cierra el drawer automáticamente</li>
+    <li>Tecla <code>Escape</code> también cierra el drawer</li>
+    <li>El item activo se marca con borde izquierdo mint (como en desktop con la línea inferior)</li>
+  </ul>
+</div>
+
+<p class="subtitle">¿Este diseño está bien o querés cambiar algo?</p>

@@ -1,8 +1,36 @@
+# Mobile Nav — Hamburger Drawer — Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Replace the broken horizontal top nav on mobile with a hamburger button that opens an accessible slide-in drawer from the left, while keeping the desktop nav unchanged.
+
+**Architecture:** Single file change — `components/Sidebar.tsx`. Already a `"use client"` component. Add `useState`/`useRef`/`useEffect` hooks for open state, focus management, focus trap, scroll lock, and Escape key. Desktop nav gets `hidden md:flex`; hamburger gets `md:hidden`. Drawer and backdrop are always in the DOM (CSS controls visibility) for smooth transitions.
+
+**Tech Stack:** Next.js 16 App Router, React hooks, Tailwind v4, TypeScript
+
+---
+
+## Files
+
+| File | Action |
+|---|---|
+| `components/Sidebar.tsx` | Modify — only file changed |
+
+---
+
+### Task 1: Rewrite `components/Sidebar.tsx` with mobile drawer
+
+**Files:**
+- Modify: `components/Sidebar.tsx`
+
+- [ ] **Step 1: Replace the entire contents of `components/Sidebar.tsx`** with the following:
+
+```tsx
 "use client";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const tabs = [
   { href: "/", label: "Inicio" },
@@ -13,7 +41,6 @@ const tabs = [
 ];
 
 export default function TopNav() {
-  const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
@@ -89,12 +116,6 @@ export default function TopNav() {
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
-  async function handleSignOut() {
-    await fetch("/api/auth/sign-out", { method: "POST" });
-    router.push("/login");
-    router.refresh();
-  }
-
   return (
     <header className="border-b border-line bg-surface">
       <div className="mx-auto flex max-w-3xl items-center justify-between px-4">
@@ -106,7 +127,7 @@ export default function TopNav() {
         </Link>
 
         {/* Desktop nav — hidden on mobile */}
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden md:flex gap-1">
           {tabs.map(({ href, label }) => (
             <Link
               key={href}
@@ -123,13 +144,6 @@ export default function TopNav() {
               )}
             </Link>
           ))}
-          <button
-            type="button"
-            onClick={handleSignOut}
-            className="px-3 py-3 text-sm font-medium text-chalk-muted transition-colors hover:text-chalk-secondary"
-          >
-            Salir
-          </button>
         </nav>
 
         {/* Hamburger button — hidden on desktop */}
@@ -224,15 +238,50 @@ export default function TopNav() {
               {label}
             </Link>
           ))}
-          <button
-            type="button"
-            onClick={handleSignOut}
-            className="px-4 py-3 text-left text-sm font-medium text-chalk-muted transition-colors hover:text-chalk-secondary"
-          >
-            Salir
-          </button>
         </nav>
       </div>
     </header>
   );
 }
+```
+
+- [ ] **Step 2: Verify the build passes**
+
+```bash
+pnpm build
+```
+
+Expected: build completes with no TypeScript or compilation errors. `/attendance` and all other routes appear in the route list.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add components/Sidebar.tsx
+git commit -m "feat: add mobile hamburger drawer nav"
+```
+
+---
+
+## Manual verification
+
+```bash
+pnpm dev
+```
+
+Open `http://localhost:3000` and verify:
+
+**Mobile (narrow the browser to < 768px or use DevTools device emulation):**
+1. The horizontal nav tabs are hidden — only the M-LIGA logo and ☰ button are visible
+2. Clicking ☰ slides the drawer in from the left with a smooth animation
+3. The backdrop appears and clicking it closes the drawer
+4. The current page is highlighted with a left mint border in the drawer
+5. Clicking any nav link navigates and closes the drawer
+6. Pressing Escape closes the drawer
+7. Tab key cycles focus only within the drawer while it's open (focus trap)
+8. Body scroll is locked while the drawer is open
+
+**Desktop (> 768px):**
+1. The horizontal nav is visible — all 5 tabs shown as before
+2. The ☰ button is not visible
+3. Active tab shows the mint underline indicator
+4. No visual regressions from the previous desktop layout

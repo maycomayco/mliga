@@ -2,13 +2,33 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { matchSchema, calculateWinnerTeam } from "@/lib/schemas/match";
+import { auth } from "@/lib/auth";
 
 export type ActionState = {
   errors?: Record<string, string[]>;
   message?: string;
 };
+
+async function ensureAdminOrReturnState(): Promise<ActionState | null> {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session || session.user.role !== "ADMIN") {
+    return { message: "No tenes permisos para esta accion." };
+  }
+
+  return null;
+}
+
+async function ensureAdminOrRedirect(): Promise<void> {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session || session.user.role !== "ADMIN") {
+    redirect("/");
+  }
+}
 
 function parseMatchFormData(formData: FormData) {
   return {
@@ -36,6 +56,9 @@ export async function createMatch(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const forbidden = await ensureAdminOrReturnState();
+  if (forbidden) return forbidden;
+
   const result = matchSchema.safeParse(parseMatchFormData(formData));
 
   if (!result.success) {
@@ -73,6 +96,9 @@ export async function updateMatch(
   _prevState: ActionState,
   formData: FormData
 ): Promise<ActionState> {
+  const forbidden = await ensureAdminOrReturnState();
+  if (forbidden) return forbidden;
+
   const result = matchSchema.safeParse(parseMatchFormData(formData));
 
   if (!result.success) {
@@ -107,6 +133,8 @@ export async function updateMatch(
 }
 
 export async function deleteMatch(formData: FormData): Promise<void> {
+  await ensureAdminOrRedirect();
+
   const id = formData.get("id") as string;
   await prisma.match.delete({ where: { id } });
   revalidatePath("/");

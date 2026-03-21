@@ -1,0 +1,99 @@
+<h2>Navegación mobile — ¿Qué enfoque preferís?</h2>
+<p class="subtitle">El nav actual se rompe con 5 tabs en pantallas chicas. Estos son los tres caminos posibles.</p>
+
+<div class="cards">
+
+  <!-- Opción A: Hamburger + sidebar drawer -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1a1f1e;padding:12px;border-radius:6px;min-height:160px;position:relative;overflow:hidden;">
+      <!-- Phone frame -->
+      <div style="background:#232928;border-radius:8px;overflow:hidden;font-family:monospace;font-size:11px;">
+        <!-- Top nav collapsed -->
+        <div style="background:#1e2422;border-bottom:1px solid #2a3330;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:#5eead4;font-weight:bold;font-size:12px;">M-LIGA</span>
+          <div style="display:flex;flex-direction:column;gap:3px;cursor:pointer;">
+            <div style="width:16px;height:2px;background:#9ca3af;border-radius:1px;"></div>
+            <div style="width:16px;height:2px;background:#9ca3af;border-radius:1px;"></div>
+            <div style="width:16px;height:2px;background:#9ca3af;border-radius:1px;"></div>
+          </div>
+        </div>
+        <!-- Content area -->
+        <div style="padding:10px 12px;color:#9ca3af;font-size:10px;">
+          <div style="background:#2a3330;border-radius:4px;padding:8px;margin-bottom:6px;">Contenido de la página...</div>
+        </div>
+      </div>
+      <!-- Sidebar drawer overlay -->
+      <div style="position:absolute;top:0;right:0;width:55%;height:100%;background:#1e2422;border-left:1px solid #2a3330;display:flex;flex-direction:column;padding:10px 0;gap:2px;">
+        <div style="padding:8px 14px;font-size:10px;color:#5eead4;font-weight:bold;border-bottom:1px solid #2a3330;margin-bottom:4px;">M-LIGA ✕</div>
+        <div style="padding:6px 14px;font-size:10px;color:#e2e8e4;">Inicio</div>
+        <div style="padding:6px 14px;font-size:10px;background:#2a3330;color:#e2e8e4;border-left:2px solid #5eead4;">Partidos</div>
+        <div style="padding:6px 14px;font-size:10px;color:#e2e8e4;">Posiciones</div>
+        <div style="padding:6px 14px;font-size:10px;color:#e2e8e4;">Asistencia</div>
+        <div style="padding:6px 14px;font-size:10px;color:#e2e8e4;">Jugadores</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Hamburger + drawer lateral</h3>
+      <p>Nav colapsada en mobile, ☰ abre un panel deslizable. En desktop se mantiene el top nav horizontal actual.</p>
+    </div>
+  </div>
+
+  <!-- Opción B: Bottom tab bar -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1a1f1e;padding:12px;border-radius:6px;min-height:160px;">
+      <div style="background:#232928;border-radius:8px;overflow:hidden;font-family:monospace;font-size:11px;">
+        <!-- Top bar minimal -->
+        <div style="background:#1e2422;border-bottom:1px solid #2a3330;padding:8px 12px;display:flex;align-items:center;">
+          <span style="color:#5eead4;font-weight:bold;font-size:12px;">M-LIGA</span>
+        </div>
+        <!-- Content area -->
+        <div style="padding:10px 12px;color:#9ca3af;font-size:10px;min-height:80px;">
+          <div style="background:#2a3330;border-radius:4px;padding:8px;margin-bottom:6px;">Contenido de la página...</div>
+        </div>
+        <!-- Bottom tab bar -->
+        <div style="background:#1e2422;border-top:1px solid #2a3330;padding:6px 4px;display:flex;justify-content:space-around;">
+          <div style="text-align:center;font-size:8px;color:#9ca3af;">🏠<br>Inicio</div>
+          <div style="text-align:center;font-size:8px;color:#5eead4;border-top:1.5px solid #5eead4;padding-top:2px;">⚽<br>Partidos</div>
+          <div style="text-align:center;font-size:8px;color:#9ca3af;">🏆<br>Posicion.</div>
+          <div style="text-align:center;font-size:8px;color:#9ca3af;">📊<br>Asistenc.</div>
+          <div style="text-align:center;font-size:8px;color:#9ca3af;">👤<br>Jugadors.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Bottom tab bar</h3>
+      <p>Tabs fijos al pie de la pantalla con íconos, patrón nativo mobile. Sin hamburger. El top nav desaparece en mobile.</p>
+    </div>
+  </div>
+
+  <!-- Opción C: Scroll horizontal -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1a1f1e;padding:12px;border-radius:6px;min-height:160px;">
+      <div style="background:#232928;border-radius:8px;overflow:hidden;font-family:monospace;font-size:11px;">
+        <!-- Top nav scrollable -->
+        <div style="background:#1e2422;border-bottom:1px solid #2a3330;padding:0 12px;display:flex;align-items:center;gap:0;overflow:hidden;">
+          <span style="color:#5eead4;font-weight:bold;font-size:11px;margin-right:8px;white-space:nowrap;">M-LIGA</span>
+          <div style="display:flex;gap:0;overflow:hidden;position:relative;">
+            <span style="padding:8px 8px;font-size:9px;color:#e2e8e4;white-space:nowrap;border-bottom:2px solid #5eead4;">Inicio</span>
+            <span style="padding:8px 8px;font-size:9px;color:#9ca3af;white-space:nowrap;">Partidos</span>
+            <span style="padding:8px 8px;font-size:9px;color:#9ca3af;white-space:nowrap;">Posicion.</span>
+            <span style="padding:8px 5px;font-size:9px;color:#9ca3af;white-space:nowrap;opacity:0.5;">Asist…</span>
+          </div>
+          <div style="position:absolute;right:8px;color:#9ca3af;font-size:10px;">›</div>
+        </div>
+        <!-- Content area -->
+        <div style="padding:10px 12px;color:#9ca3af;font-size:10px;">
+          <div style="background:#2a3330;border-radius:4px;padding:8px;margin-bottom:6px;">Contenido de la página...</div>
+          <div style="color:#6b7a76;font-size:9px;">← deslizá el nav →</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Nav horizontal scrolleable</h3>
+      <p>El nav actual con <code>overflow-x: auto</code>. Mínimo cambio, pero la UX es menos obvia — no todos saben que pueden deslizar.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px;">Hacé click en la opción que preferís o respondé en el terminal.</p>

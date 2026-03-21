@@ -60,17 +60,40 @@ async function main() {
   console.log("Seeding database...");
 
   for (const user of users) {
-    await prisma.user.upsert({
+    const hashedPassword = hashPassword(user.password);
+
+    const createdOrUpdatedUser = await prisma.user.upsert({
       where: { email: user.email },
       update: {},
       create: {
         email: user.email,
         name: user.name,
         username: user.username,
-        password: hashPassword(user.password),
+        password: hashedPassword,
+        emailVerified: true,
         role: user.role,
       },
     });
+
+    await prisma.account.upsert({
+      where: {
+        providerId_accountId: {
+          providerId: "credential",
+          accountId: createdOrUpdatedUser.id,
+        },
+      },
+      update: {
+        password: hashedPassword,
+        userId: createdOrUpdatedUser.id,
+      },
+      create: {
+        userId: createdOrUpdatedUser.id,
+        accountId: createdOrUpdatedUser.id,
+        providerId: "credential",
+        password: hashedPassword,
+      },
+    });
+
     console.log(`  ✓ ${user.name} (${user.email})`);
   }
 
