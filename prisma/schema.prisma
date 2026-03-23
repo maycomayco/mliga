@@ -26,11 +26,28 @@ model User {
 
   accounts Account[]
   sessions Session[]
+  auditLogs AuditLog[]
 
   matchesAsTeam1Player1 Match[] @relation("team1player1")
   matchesAsTeam1Player2 Match[] @relation("team1player2")
   matchesAsTeam2Player1 Match[] @relation("team2player1")
   matchesAsTeam2Player2 Match[] @relation("team2player2")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  event     String
+  userId    String?
+  ipAddress String?
+  userAgent String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([event])
+  @@index([userId])
+  @@index([createdAt])
 }
 
 model Session {
@@ -78,6 +95,16 @@ model Verification {
   updatedAt  DateTime @updatedAt
 
   @@index([identifier])
+}
+
+model RateLimit {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  count       Int
+  lastRequest BigInt
+  createdAt   DateTime @default(now())
+
+  @@index([key])
 }
 
 model Match {

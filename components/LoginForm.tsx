@@ -16,7 +16,7 @@ export default function LoginForm() {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const username = String(form.get("username") ?? "").trim();
+    const username = String(form.get("username") ?? "").trim().toLowerCase();
     const password = String(form.get("password") ?? "");
 
     if (!username || !password) {
@@ -41,6 +41,14 @@ export default function LoginForm() {
     });
 
     if (!response.ok) {
+      await fetch("/api/security/auth-event", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ event: "login_failed", username }),
+      }).catch(() => undefined);
+
       setStatus({ pending: false, error: "Credenciales invalidas." });
       return;
     }

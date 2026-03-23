@@ -12,6 +12,10 @@ function hashPassword(password: string): string {
   return `${salt}:${hash}`;
 }
 
+function normalizeUsername(username: string): string {
+  return username.trim().toLowerCase();
+}
+
 const users: {
   email: string;
   name: string;
@@ -23,35 +27,35 @@ const users: {
     email: "maycobarale@gmail.com",
     name: "Mayco",
     username: "mayco",
-    password: "0112358",
+    password: "0112358132",
     role: Role.ADMIN,
   },
   {
     email: "jano@aaa.com",
     name: "Jano",
     username: "jano.vino",
-    password: "0123456",
+    password: "0123456789",
     role: Role.USER,
   },
   {
     email: "victor@aaa.com",
     name: "Victor",
     username: "victor.voleadefondo",
-    password: "0123456",
+    password: "0123456789",
     role: Role.USER,
   },
   {
     email: "santi@aaa.com",
     name: "Santi",
     username: "santi.profe",
-    password: "0123456",
+    password: "0123456789",
     role: Role.USER,
   },
   {
     email: "lucas@aaa.com",
     name: "Lucas",
     username: "lucas.sinescalas",
-    password: "0123456",
+    password: "0123456789",
     role: Role.USER,
   },
 ];
@@ -68,7 +72,7 @@ async function main() {
       create: {
         email: user.email,
         name: user.name,
-        username: user.username,
+        username: normalizeUsername(user.username),
         password: hashedPassword,
         emailVerified: true,
         role: user.role,

@@ -6,22 +6,38 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { matchSchema, calculateWinnerTeam } from "@/lib/schemas/match";
 import { auth } from "@/lib/auth";
+import { logSecurityEvent } from "@/lib/security/audit";
 
 export type ActionState = {
   errors?: Record<string, string[]>;
   message?: string;
 };
 
+/**
+ * Validates that the current user is an admin. Use in Server Actions.
+ * Logs unauthorized attempts to the audit trail.
+ * @returns An error state if not admin, null if authorized.
+ */
 async function ensureAdminOrReturnState(): Promise<ActionState | null> {
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session || session.user.role !== "ADMIN") {
+    await logSecurityEvent({
+      event: "admin_forbidden",
+      userId: session?.user?.id ?? null,
+      metadata: { action: "matches:mutate" },
+    });
     return { message: "No tenes permisos para esta accion." };
   }
 
   return null;
 }
 
+/**
+ * Validates that the current user is an admin. Use in components that redirect.
+ * If not authorized, redirects to home without an error message.
+ * @throws Redirects to "/" if not admin.
+ */
 async function ensureAdminOrRedirect(): Promise<void> {
   const session = await auth.api.getSession({ headers: await headers() });
 
@@ -86,6 +102,12 @@ export async function createMatch(
     },
   });
 
+  await logSecurityEvent({
+    event: "admin_action",
+    userId: (await auth.api.getSession({ headers: await headers() }))?.user.id ?? null,
+    metadata: { action: "match.create" },
+  });
+
   revalidatePath("/");
   revalidatePath("/matches");
   redirect("/matches");
@@ -127,6 +149,12 @@ export async function updateMatch(
     },
   });
 
+  await logSecurityEvent({
+    event: "admin_action",
+    userId: (await auth.api.getSession({ headers: await headers() }))?.user.id ?? null,
+    metadata: { action: "match.update", matchId: id },
+  });
+
   revalidatePath("/");
   revalidatePath("/matches");
   redirect("/matches");
@@ -137,6 +165,11 @@ export async function deleteMatch(formData: FormData): Promise<void> {
 
   const id = formData.get("id") as string;
   await prisma.match.delete({ where: { id } });
+  await logSecurityEvent({
+    event: "admin_action",
+    userId: (await auth.api.getSession({ headers: await headers() }))?.user.id ?? null,
+    metadata: { action: "match.delete", matchId: id },
+  });
   revalidatePath("/");
   revalidatePath("/matches");
   redirect("/matches");

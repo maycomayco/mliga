@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import LoginForm from "@/components/LoginForm";
 
 export default function LoginPage() {
@@ -8,7 +9,9 @@ export default function LoginPage() {
         <p className="mt-1 text-sm text-chalk-muted">
           Accede con tu usuario y contrasena.
         </p>
-        <LoginForm />
+        <Suspense>
+          <LoginForm />
+        </Suspense>
       </section>
     </main>
   );

@@ -11,10 +11,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 pnpm prisma migrate dev    # Apply migrations + run seed
 pnpm prisma migrate reset  # Reset DB + seed
 pnpm prisma studio         # Open DB browser
-tsx prisma/seed.ts         # Run seed directly
+pnpm prisma db seed        # Run seed directly
 ```
-
-Requires `DATABASE_URL` in `.env` pointing to the PostgreSQL instance (see `docker-compose.yml`).
 
 ## Architecture
 
