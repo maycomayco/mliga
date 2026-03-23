@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const tabs = [
   { href: "/", label: "Inicio" },
@@ -13,6 +13,7 @@ const tabs = [
 ];
 
 export default function TopNav() {
+  const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
@@ -88,6 +89,12 @@ export default function TopNav() {
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
+  async function handleSignOut() {
+    await fetch("/api/auth/sign-out", { method: "POST" });
+    router.push("/login");
+    router.refresh();
+  }
+
   return (
     <header className="border-b border-line bg-surface">
       <div className="mx-auto flex max-w-3xl items-center justify-between px-4">
@@ -99,7 +106,7 @@ export default function TopNav() {
         </Link>
 
         {/* Desktop nav — hidden on mobile */}
-        <nav className="hidden md:flex gap-1">
+        <nav className="hidden items-center gap-1 md:flex">
           {tabs.map(({ href, label }) => (
             <Link
               key={href}
@@ -116,6 +123,13 @@ export default function TopNav() {
               )}
             </Link>
           ))}
+          <button
+            type="button"
+            onClick={handleSignOut}
+            className="px-3 py-3 text-sm font-medium text-chalk-muted transition-colors hover:text-chalk-secondary"
+          >
+            Salir
+          </button>
         </nav>
 
         {/* Hamburger button — hidden on desktop */}
@@ -210,6 +224,13 @@ export default function TopNav() {
               {label}
             </Link>
           ))}
+          <button
+            type="button"
+            onClick={handleSignOut}
+            className="px-4 py-3 text-left text-sm font-medium text-chalk-muted transition-colors hover:text-chalk-secondary"
+          >
+            Salir
+          </button>
         </nav>
       </div>
     </header>
