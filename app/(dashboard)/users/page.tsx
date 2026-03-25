@@ -1,6 +1,14 @@
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export default async function UsersPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session?.user.role !== "ADMIN") {
+    redirect("/");
+  }
+
   const users = await prisma.user.findMany({
     orderBy: { name: "asc" },
     select: { id: true, name: true, email: true, username: true, role: true },
