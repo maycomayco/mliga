@@ -10,9 +10,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
     redirect("/login");
   }
 
+  const isAdmin = session.user.role === "ADMIN";
+
   return (
     <div className="flex min-h-full flex-col">
-      <TopNav />
+      <TopNav isAdmin={isAdmin} />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6">
         {children}
       </main>
