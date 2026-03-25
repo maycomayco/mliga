@@ -1,4 +1,4 @@
-import { PrismaClient, Role } from "@prisma/client";
+import { PrismaClient, Role } from "./generated/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { scryptSync, randomBytes } from "crypto";
 import "dotenv/config";
