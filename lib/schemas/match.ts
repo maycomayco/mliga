@@ -1,3 +1,4 @@
+import { Prisma } from "../../prisma/generated/client";
 import { z } from "zod";
 
 export const matchSchema = z
@@ -26,6 +27,19 @@ export const matchSchema = z
   );
 
 export type MatchInput = z.infer<typeof matchSchema>;
+
+export const matchWithPlayersArgs = {
+  include: {
+    team1player1: { select: { name: true } },
+    team1player2: { select: { name: true } },
+    team2player1: { select: { name: true } },
+    team2player2: { select: { name: true } },
+  },
+} satisfies Prisma.MatchDefaultArgs;
+
+export type MatchWithPlayers = Prisma.MatchGetPayload<
+  typeof matchWithPlayersArgs
+>;
 
 export function calculateWinnerTeam(data: MatchInput): number {
   let team1Sets = 0;
