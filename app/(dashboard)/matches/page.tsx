@@ -2,21 +2,27 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { Prisma } from "@prisma/client";
 import DeleteMatchButton from "@/components/matches/DeleteMatchButton";
 
 export default async function MatchesPage() {
-  const [session, matches] = await Promise.all([
-    auth.api.getSession({ headers: await headers() }),
-    prisma.match.findMany({
-      orderBy: { date: "desc" },
-      include: {
-        team1player1: { select: { name: true } },
-        team1player2: { select: { name: true } },
-        team2player1: { select: { name: true } },
-        team2player2: { select: { name: true } },
-      },
-    }),
-  ]);
+  // TODO: review this types, maybe we can use a more generic type for all the includes in the app
+  const matchInclude = {
+    team1player1: { select: { name: true } },
+    team1player2: { select: { name: true } },
+    team2player1: { select: { name: true } },
+    team2player2: { select: { name: true } },
+  } as const;
+
+  type MatchWithPlayers = Prisma.MatchGetPayload<{
+    include: typeof matchInclude;
+  }>;
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  const matches: MatchWithPlayers[] = await prisma.match.findMany({
+    orderBy: { date: "desc" },
+    include: matchInclude,
+  });
 
   const isAdmin = session?.user.role === "ADMIN";
 
