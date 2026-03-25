@@ -1,28 +1,37 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import DeleteMatchButton from "@/components/matches/DeleteMatchButton";
 
 export default async function MatchesPage() {
-  const matches = await prisma.match.findMany({
-    orderBy: { date: "desc" },
-    include: {
-      team1player1: { select: { name: true } },
-      team1player2: { select: { name: true } },
-      team2player1: { select: { name: true } },
-      team2player2: { select: { name: true } },
-    },
-  });
+  const [session, matches] = await Promise.all([
+    auth.api.getSession({ headers: await headers() }),
+    prisma.match.findMany({
+      orderBy: { date: "desc" },
+      include: {
+        team1player1: { select: { name: true } },
+        team1player2: { select: { name: true } },
+        team2player1: { select: { name: true } },
+        team2player2: { select: { name: true } },
+      },
+    }),
+  ]);
+
+  const isAdmin = session?.user.role === "ADMIN";
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold text-chalk">Partidos</h1>
-        <Link
-          href="/matches/new"
-          className="rounded-lg bg-mint-dimmed px-4 py-2 text-sm font-medium text-mint transition-colors hover:bg-surface-hover"
-        >
-          + Nuevo
-        </Link>
+        {isAdmin && (
+          <Link
+            href="/matches/new"
+            className="rounded-lg bg-mint-dimmed px-4 py-2 text-sm font-medium text-mint transition-colors hover:bg-surface-hover"
+          >
+            + Nuevo
+          </Link>
+        )}
       </div>
 
       {matches.length === 0 ? (
@@ -99,15 +108,17 @@ export default async function MatchesPage() {
                       year: "numeric",
                     })}
                   </span>
-                  <div className="flex items-center gap-3">
-                    <Link
-                      href={`/matches/${match.id}/edit`}
-                      className="text-xs text-chalk-muted transition-colors hover:text-chalk-secondary"
-                    >
-                      Editar
-                    </Link>
-                    <DeleteMatchButton id={match.id} />
-                  </div>
+                  {isAdmin && (
+                    <div className="flex items-center gap-3">
+                      <Link
+                        href={`/matches/${match.id}/edit`}
+                        className="text-xs text-chalk-muted transition-colors hover:text-chalk-secondary"
+                      >
+                        Editar
+                      </Link>
+                      <DeleteMatchButton id={match.id} />
+                    </div>
+                  )}
                 </div>
               </div>
             );
