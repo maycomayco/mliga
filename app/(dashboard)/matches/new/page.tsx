@@ -1,9 +1,17 @@
 import Link from "next/link";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import MatchForm from "@/components/matches/MatchForm";
 import { createMatch } from "@/app/(dashboard)/matches/actions";
 
 export default async function NewMatchPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session?.user.role !== "ADMIN") {
+    redirect("/");
+  }
+
   const players = await prisma.user.findMany({
     orderBy: { name: "asc" },
     select: { id: true, name: true },

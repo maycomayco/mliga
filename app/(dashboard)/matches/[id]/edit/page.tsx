@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import MatchForm from "@/components/matches/MatchForm";
 import { updateMatch } from "@/app/(dashboard)/matches/actions";
 
@@ -9,6 +11,11 @@ export default async function EditMatchPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session?.user.role !== "ADMIN") {
+    redirect("/");
+  }
+
   const { id } = await params;
 
   const [match, players] = await Promise.all([

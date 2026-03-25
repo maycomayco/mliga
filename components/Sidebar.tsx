@@ -4,15 +4,16 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-const tabs = [
+const allTabs = [
   { href: "/", label: "Inicio" },
   { href: "/matches", label: "Partidos" },
   { href: "/standings", label: "Posiciones" },
   { href: "/attendance", label: "Asistencia" },
-  { href: "/users", label: "Jugadores" },
+  { href: "/users", label: "Jugadores", adminOnly: true },
 ];
 
-export default function TopNav() {
+export default function TopNav({ isAdmin }: { isAdmin: boolean }) {
+  const tabs = allTabs.filter((t) => !t.adminOnly || isAdmin);
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
