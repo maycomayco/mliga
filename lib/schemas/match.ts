@@ -1,4 +1,4 @@
-import { Prisma } from "../../prisma/generated/client";
+import { Prisma } from "@/prisma/generated/client";
 import { z } from "zod";
 
 export const matchSchema = z
