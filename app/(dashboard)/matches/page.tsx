@@ -2,7 +2,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import DeleteMatchButton from "@/components/matches/DeleteMatchButton";
 
 export default async function MatchesPage() {
