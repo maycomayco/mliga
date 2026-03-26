@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { headers } from "next/headers";
-import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { getMatch, getPlayers } from "@/lib/queries/matches";
 import MatchForm from "@/components/matches/MatchForm";
 import { updateMatch } from "@/app/(dashboard)/matches/actions";
 
@@ -17,14 +17,7 @@ export default async function EditMatchPage({
   }
 
   const { id } = await params;
-
-  const [match, players] = await Promise.all([
-    prisma.match.findUnique({ where: { id } }),
-    prisma.user.findMany({
-      orderBy: { name: "asc" },
-      select: { id: true, name: true },
-    }),
-  ]);
+  const [match, players] = await Promise.all([getMatch(id), getPlayers()]);
 
   if (!match) notFound();
 

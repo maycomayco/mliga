@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { getPlayers } from "@/lib/queries/matches";
 import MatchForm from "@/components/matches/MatchForm";
 import { createMatch } from "@/app/(dashboard)/matches/actions";
 
@@ -12,10 +12,7 @@ export default async function NewMatchPage() {
     redirect("/");
   }
 
-  const players = await prisma.user.findMany({
-    orderBy: { name: "asc" },
-    select: { id: true, name: true },
-  });
+  const players = await getPlayers();
 
   return (
     <div className="mx-auto max-w-2xl">
