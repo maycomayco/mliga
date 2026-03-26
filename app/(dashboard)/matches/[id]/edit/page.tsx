@@ -46,6 +46,8 @@ export default async function EditMatchPage({
           set2team2: match.set2team2,
           set3team1: match.set3team1,
           set3team2: match.set3team2,
+          // winnerTeam = 0 indica empate (ver CLAUDE.md)
+          isDraw: match.winnerTeam === 0,
         }}
       />
     </div>

@@ -59,6 +59,8 @@ function parseMatchFormData(formData: FormData) {
     set2team2: formData.get("set2team2"),
     set3team1: formData.get("set3team1"),
     set3team2: formData.get("set3team2"),
+    // Checkbox envia "on" si marcado, null si no. z.coerce.boolean lo convierte.
+    isDraw: formData.get("isDraw"),
   };
 }
 
@@ -82,8 +84,9 @@ export async function createMatch(
   }
 
   const data = result.data;
+  // winnerTeam = 0 cuando isDraw: cada equipo se lleva 1 punto (un set ganado cada uno)
   const winnerTeam = calculateWinnerTeam(data);
-  const saveSet3 = set3Needed(data);
+  const saveSet3 = !data.isDraw && set3Needed(data);
 
   await prisma.match.create({
     data: {
@@ -128,8 +131,9 @@ export async function updateMatch(
   }
 
   const data = result.data;
+  // winnerTeam = 0 cuando isDraw: cada equipo se lleva 1 punto (un set ganado cada uno)
   const winnerTeam = calculateWinnerTeam(data);
-  const saveSet3 = set3Needed(data);
+  const saveSet3 = !data.isDraw && set3Needed(data);
 
   await prisma.match.update({
     where: { id },
