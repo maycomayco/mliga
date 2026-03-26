@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import type { ActionState } from "@/app/(dashboard)/matches/actions";
 
 type Player = { id: string; name: string | null };
@@ -20,6 +20,7 @@ type Props = {
     set2team2?: number;
     set3team1?: number | null;
     set3team2?: number | null;
+    isDraw?: boolean;
   };
 };
 
@@ -33,6 +34,7 @@ const labelClass = "mb-1.5 block text-xs font-medium uppercase tracking-wider te
 
 export default function MatchForm({ action, players, defaultValues }: Props) {
   const [state, formAction, pending] = useActionState(action, initialState);
+  const [isDraw, setIsDraw] = useState(defaultValues?.isDraw ?? false);
 
   function fieldError(field: string) {
     const errs = state.errors?.[field];
@@ -114,8 +116,23 @@ export default function MatchForm({ action, players, defaultValues }: Props) {
       <div className="space-y-4">
         <ScoreInput label="Set 1" name1="set1team1" name2="set1team2" default1={defaultValues?.set1team1} default2={defaultValues?.set1team2} />
         <ScoreInput label="Set 2" name1="set2team1" name2="set2team2" default1={defaultValues?.set2team1} default2={defaultValues?.set2team2} />
-        <ScoreInput label="Set 3" hint="solo si sets 1-1" name1="set3team1" name2="set3team2" default1={defaultValues?.set3team1} default2={defaultValues?.set3team2} />
+        {!isDraw && (
+          <ScoreInput label="Set 3" hint="solo si sets 1-1" name1="set3team1" name2="set3team2" default1={defaultValues?.set3team1} default2={defaultValues?.set3team2} />
+        )}
       </div>
+
+      {/* Empate */}
+      <label className="flex cursor-pointer items-center gap-3">
+        <input
+          type="checkbox"
+          name="isDraw"
+          checked={isDraw}
+          onChange={(e) => setIsDraw(e.target.checked)}
+          className="h-4 w-4 rounded border-line accent-amber"
+        />
+        <span className="text-sm text-chalk-secondary">Concluir en empate</span>
+        {fieldError("isDraw")}
+      </label>
 
       {/* General error */}
       {state.message && <p className="text-sm text-rose">{state.message}</p>}

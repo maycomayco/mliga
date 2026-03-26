@@ -53,6 +53,6 @@ Never run `git commit` or `git push` unless explicitly requested.
 - **Reads** → `lib/queries/` (reusable across pages, no `prisma` calls in page components)
 - **Writes** → `app/(dashboard)/<feature>/actions.ts` (Server Actions colocated with the feature that owns the form)
 - Set 3 is only persisted when sets are 1-1 (`set3Needed()` in actions.ts); form always shows set 3 inputs
-- `winnerTeam` (1 or 2) is computed on save, not stored as a player ID
+- `winnerTeam` (1, 2, or 0) is computed on save, not stored as a player ID — **0 means draw** (partido concluido sin 3er set, cada pareja ganó un set)
 - Standings computed at query time from raw scores — no denormalized table
 - UI text is in Spanish (es-AR)
