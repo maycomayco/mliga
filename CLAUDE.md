@@ -1,51 +1,58 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 @AGENTS.md
 
 ## Commands
 
+Always use `pnpm`, never `yarn` or `npm`.
+
 ```bash
-# Database
-pnpm prisma migrate dev    # Apply migrations + run seed
-pnpm prisma migrate reset  # Reset DB + seed
-pnpm prisma studio         # Open DB browser
-pnpm prisma db seed        # Run seed directly
+docker compose up -d        # start PostgreSQL (required before dev)
+pnpm prisma migrate dev     # apply migrations + seed
+pnpm prisma migrate reset   # reset DB + seed
+pnpm prisma studio          # DB browser
+pnpm prisma db seed         # seed only
 ```
 
 ## Architecture
 
-**Next.js 16 App Router** with a single route group `app/(dashboard)/` that wraps all pages in a top-nav layout. All DB access is server-side (Server Components + Server Actions — no API routes).
+**Next.js App Router** — `app/(dashboard)/` wraps all pages in a top-nav layout. DB access is server-side (Server Components + Server Actions). Auth routes at `app/api/auth/[...all]/`.
 
-- `app/(dashboard)/matches/actions.ts` — all match mutations (`createMatch`, `updateMatch`, `deleteMatch`) as Server Actions using `useActionState`
-- `lib/prisma.ts` — singleton `PrismaClient` using `@prisma/adapter-pg` (the pg driver adapter, not the default query engine)
-- `lib/schemas/match.ts` — Zod schemas for match form validation; also exports `calculateWinnerTeam`
-- `components/Sidebar.tsx` — despite the filename, this is the top navigation bar (`TopNav`)
-- `prisma/schema.prisma` — two models: `User` and `Match`. A match has 4 player relations (team1player1..team2player2), scores per set (set3 is nullable — only saved when sets are 1-1)
+- `app/(dashboard)/matches/actions.ts` — match mutations (`createMatch`, `updateMatch`, `deleteMatch`) as Server Actions; all require `ADMIN` role
+- `lib/prisma.ts` — singleton `PrismaClient` via `@prisma/adapter-pg`; client generated to `prisma/generated/`
+- `lib/queries/` — all DB reads (`getMatches`, `getMatch`, `getPlayers`, `getStandings`, `getAttendance`, `getUsers`); pages never call `prisma` directly
+- `lib/schemas/match.ts` — Zod schemas for match forms; exports `calculateWinnerTeam`
+- `lib/auth.ts` — Better Auth config (email+password, username plugin, rate limiting, session hooks)
+- `lib/auth-client.ts` — Better Auth browser client
+- `lib/security/audit.ts` — `logSecurityEvent()` used in actions and auth hooks
+- `components/Sidebar.tsx` — despite the name, this is the top nav (`TopNav`)
+- `prisma/schema.prisma` — models: `User`, `Match`, `Session`, `Account`, `AuditLog`, `Verification`, `RateLimit`
+
+**Auth:** Better Auth with `username` plugin. Sign-up is disabled (`disableSignUp: true`). Only `ADMIN` users can mutate matches. Rate limited to 3 login attempts per 5 min.
 
 ## Design System
 
-Tailwind v4 (CSS-first, no `tailwind.config.ts`). All custom tokens are in `app/globals.css` under `@theme inline` using raw `oklch()` values — **do not use `var()` inside `@theme`**, Tailwind v4 cannot resolve them there.
+Tailwind v4 (CSS-first, no `tailwind.config.ts`). Tokens in `app/globals.css` under `@theme inline` using raw `oklch()` — **never use `var()` inside `@theme`**.
 
-Custom colors available as Tailwind utilities:
 | Token | Purpose |
 |---|---|
 | `pitch` | Page background |
-| `surface` / `surface-raised` / `surface-hover` | Card/panel backgrounds |
+| `surface` / `surface-raised` / `surface-hover` | Card backgrounds |
 | `line` / `line-soft` | Borders |
 | `chalk` / `chalk-secondary` / `chalk-muted` | Text hierarchy |
-| `mint` / `mint-dimmed` | Primary accent (pastel green) |
+| `mint` / `mint-dimmed` | Primary accent |
 | `rose` / `rose-dimmed` | Destructive / loss |
 | `amber` | Warning |
 
 ## Git
 
-Always ask for explicit permission before running `git commit` or `git push`.
+Never run `git commit` or `git push` unless explicitly requested.
 
 ## Key Conventions
 
-- Match set 3 is only persisted when sets are tied 1-1 (`set3Needed()` in actions.ts); the form always shows set 3 inputs
+- **Reads** → `lib/queries/` (reusable across pages, no `prisma` calls in page components)
+- **Writes** → `app/(dashboard)/<feature>/actions.ts` (Server Actions colocated with the feature that owns the form)
+- Set 3 is only persisted when sets are 1-1 (`set3Needed()` in actions.ts); form always shows set 3 inputs
 - `winnerTeam` (1 or 2) is computed on save, not stored as a player ID
-- Standings are computed at query time from raw set scores — no denormalized ranking table
-- UI text is in Spanish (es-AR locale)
+- Standings computed at query time from raw scores — no denormalized table
+- UI text is in Spanish (es-AR)
