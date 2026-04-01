@@ -33,6 +33,8 @@ model User {
   matchesAsTeam1Player2 Match[] @relation("team1player2")
   matchesAsTeam2Player1 Match[] @relation("team2player1")
   matchesAsTeam2Player2 Match[] @relation("team2player2")
+
+  dinnerAttendances DinnerAttendance[]
 }
 
 model AuditLog {
@@ -133,4 +135,27 @@ model Match {
   @@index([team1player2Id])
   @@index([team2player1Id])
   @@index([team2player2Id])
+}
+
+model ArgentinianDinner {
+  id        String   @id @default(cuid())
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  attendees DinnerAttendance[]
+
+  @@index([date])
+}
+
+model DinnerAttendance {
+  id       String            @id @default(cuid())
+  dinnerId String
+  userId   String
+  dinner   ArgentinianDinner @relation(fields: [dinnerId], references: [id], onDelete: Cascade)
+  user     User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([dinnerId, userId])
+  @@index([dinnerId])
+  @@index([userId])
 }
