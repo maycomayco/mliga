@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
 export default async function DashboardPage() {
-  const [totalMatches, lastMatch, matches, users] = await Promise.all([
+  const [totalMatches, lastMatch, matches, users, dinners] = await Promise.all([
     prisma.match.count(),
     prisma.match.findFirst({
       orderBy: { date: "desc" },
@@ -28,6 +28,13 @@ export default async function DashboardPage() {
       },
     }),
     prisma.user.findMany({ select: { id: true, name: true } }),
+    prisma.argentinianDinner.findMany({
+      orderBy: { date: "desc" },
+      take: 5,
+      include: {
+        attendees: { include: { user: { select: { name: true } } } },
+      },
+    }),
   ]);
 
   // Build standings
@@ -126,6 +133,45 @@ export default async function DashboardPage() {
           </div>
         ) : (
           <p className="mt-3 text-sm text-chalk-muted">Sin partidos aún</p>
+        )}
+      </div>
+
+      {/* Recent dinners */}
+      <div className="rounded-lg border border-line bg-surface p-5">
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-medium uppercase tracking-wider text-chalk-muted">
+            Últimas comidas
+          </p>
+          <Link href="/dinner" className="text-xs text-mint hover:underline">
+            Ver todas
+          </Link>
+        </div>
+        {dinners.length > 0 ? (
+          <div className="mt-3 space-y-3">
+            {dinners.map((dinner) => (
+              <div key={dinner.id}>
+                <p className="text-xs font-mono text-chalk-muted">
+                  {new Date(dinner.date).toLocaleDateString("es-AR", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </p>
+                <div className="mt-1 flex flex-wrap gap-1">
+                  {dinner.attendees.map((a) => (
+                    <span
+                      key={a.user.name}
+                      className="inline-flex rounded bg-surface-raised px-2 py-0.5 text-xs text-chalk-secondary"
+                    >
+                      {a.user.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-chalk-muted">Sin comidas aún</p>
         )}
       </div>
     </div>

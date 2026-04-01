@@ -9,6 +9,7 @@ const allTabs = [
   { href: "/matches", label: "Partidos" },
   { href: "/standings", label: "Posiciones" },
   { href: "/attendance", label: "Asistencia" },
+  { href: "/dinner", label: "Comidas" },
   { href: "/users", label: "Jugadores", adminOnly: true },
 ];
 
