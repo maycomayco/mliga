@@ -80,7 +80,7 @@ export default function DinnerForm({ action, players, defaultValues }: Props) {
         disabled={pending}
         className="w-full rounded-lg bg-mint px-4 py-2.5 text-sm font-semibold text-pitch transition-opacity hover:opacity-90 disabled:opacity-50"
       >
-        {pending ? "Guardando..." : "Guardar cena"}
+        {pending ? "Guardando..." : "Guardar"}
       </button>
     </form>
   );
