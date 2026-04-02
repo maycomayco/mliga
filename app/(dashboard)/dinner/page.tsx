@@ -14,13 +14,13 @@ export default async function DinnersPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-chalk">comidas</h1>
+        <h1 className="text-lg font-semibold text-chalk">Asados</h1>
         {isAdmin && (
           <Link
             href="/dinner/new"
             className="rounded-lg bg-mint-dimmed px-4 py-2 text-sm font-medium text-mint transition-colors hover:bg-surface-hover"
           >
-            + Nueva
+            Agregar
           </Link>
         )}
       </div>
