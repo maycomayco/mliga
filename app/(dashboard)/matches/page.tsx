@@ -20,7 +20,7 @@ export default async function MatchesPage() {
             href="/matches/new"
             className="rounded-lg bg-mint-dimmed px-4 py-2 text-sm font-medium text-mint transition-colors hover:bg-surface-hover"
           >
-            + Nuevo
+            Agregar
           </Link>
         )}
       </div>

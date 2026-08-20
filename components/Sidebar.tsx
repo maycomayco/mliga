@@ -102,7 +102,7 @@ export default function TopNav({ isAdmin }: { isAdmin: boolean }) {
       <div className="mx-auto flex max-w-3xl items-center justify-between px-4">
         <Link
           href="/"
-          className="py-3 font-mono text-sm font-bold tracking-tight text-mint"
+          className="py-3 font-mono uppercase font-bold tracking-tight text-mint"
         >
           La Liga
         </Link>
@@ -183,7 +183,7 @@ export default function TopNav({ isAdmin }: { isAdmin: boolean }) {
       >
         {/* Drawer header */}
         <div className="flex items-center justify-between border-b border-line px-4 py-3">
-          <span className="font-mono text-sm font-bold tracking-tight text-mint">
+          <span className="font-mono uppercase font-bold tracking-tight text-mint">
             La Liga
           </span>
           <button

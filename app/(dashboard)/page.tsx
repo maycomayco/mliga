@@ -63,12 +63,12 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-lg font-semibold text-chalk">Inicio</h1>
+      <h1 className="text-lg font-semibold text-chalk">Panel general</h1>
 
       <div className="grid gap-4 sm:grid-cols-2">
         {/* Total matches */}
         <div className="rounded-lg border border-line bg-surface p-5">
-          <p className="text-xs font-medium uppercase tracking-wider text-chalk-muted">
+          <p className="text-sm font-medium uppercase tracking-wider text-chalk-muted">
             Partidos jugados
           </p>
           <p className="mt-2 font-mono text-4xl font-bold tabular-nums text-chalk">
@@ -78,9 +78,14 @@ export default async function DashboardPage() {
 
         {/* Last match scoreboard */}
         <div className="rounded-lg border border-line bg-surface p-5">
-          <p className="text-xs font-medium uppercase tracking-wider text-chalk-muted">
+          <div className="flex items-center justify-between">
+          <p className="text-sm font-medium uppercase tracking-wider text-chalk-muted">
             Último partido
           </p>
+<Link href="/matches" className="text-xs text-mint hover:underline">
+            Ver todo
+          </Link>
+          </div>
           {lastMatch ? (
             <div className="mt-3 space-y-1">
               <ScoreRow
@@ -109,11 +114,11 @@ export default async function DashboardPage() {
       {/* Top standings */}
       <div className="rounded-lg border border-line bg-surface p-5">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-medium uppercase tracking-wider text-chalk-muted">
+          <p className="text-sm font-medium uppercase tracking-wider text-chalk-muted">
             Posiciones
           </p>
           <Link href="/standings" className="text-xs text-mint hover:underline">
-            Ver todas
+            Ver todo
           </Link>
         </div>
         {topStandings.length > 0 ? (
@@ -139,11 +144,11 @@ export default async function DashboardPage() {
       {/* Recent dinners */}
       <div className="rounded-lg border border-line bg-surface p-5">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-medium uppercase tracking-wider text-chalk-muted">
-            Últimas comidas
+          <p className="text-sm font-medium uppercase tracking-wider text-chalk-muted">
+            Últimos asados
           </p>
           <Link href="/dinner" className="text-xs text-mint hover:underline">
-            Ver todas
+            Ver todo
           </Link>
         </div>
         {dinners.length > 0 ? (
@@ -171,7 +176,7 @@ export default async function DashboardPage() {
             ))}
           </div>
         ) : (
-          <p className="mt-3 text-sm text-chalk-muted">Sin comidas aún</p>
+          <p className="mt-3 text-sm text-chalk-muted">Sin asados aún</p>
         )}
       </div>
     </div>

@@ -28,7 +28,7 @@ export default async function EditDinnerPage({ params }: Props) {
         <Link href="/dinner" className="text-sm text-chalk-muted transition-colors hover:text-chalk-secondary">
           ← Volver
         </Link>
-        <h1 className="text-lg font-semibold text-chalk">Editar cena</h1>
+        <h1 className="text-lg font-semibold text-chalk">Editar asado</h1>
       </div>
       <DinnerForm
         action={updateDinner.bind(null, id)}

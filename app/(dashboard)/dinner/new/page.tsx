@@ -20,9 +20,9 @@ export default async function NewDinnerPage() {
         <Link href="/dinner" className="text-sm text-chalk-muted transition-colors hover:text-chalk-secondary">
           ← Volver
         </Link>
-        <h1 className="text-lg font-semibold text-chalk">Nueva cena</h1>
+        <h1 className="text-lg font-semibold text-chalk">Nuevo asado</h1>
       </div>
       <DinnerForm action={createDinner} players={players} />
     </div>
-  );
-}
+    );
+  }
