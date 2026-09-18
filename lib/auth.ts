@@ -104,7 +104,7 @@ export const auth = betterAuth({
     },
   },
   rateLimit: {
-    enabled: true,
+    enabled: isProduction,
     storage: "database",
     customRules: {
       "/sign-in/username": {

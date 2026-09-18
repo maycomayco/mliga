@@ -23,7 +23,7 @@ pnpm prisma db seed         # seed only
 - `app/(dashboard)/matches/actions.ts` — match mutations (`createMatch`, `updateMatch`, `deleteMatch`) as Server Actions; all require `ADMIN` role
 - `lib/prisma.ts` — singleton `PrismaClient` via `@prisma/adapter-pg`; client generated to `prisma/generated/`
 - `lib/queries/` — all DB reads (`getMatches`, `getMatch`, `getPlayers`, `getStandings`, `getAttendance`, `getUsers`); pages never call `prisma` directly
-- `lib/schemas/match.ts` — Zod schemas for match forms; exports `calculateWinnerTeam`
+- `lib/schemas/match.ts` — Zod schemas for match forms
 - `lib/auth.ts` — Better Auth config (email+password, username plugin, rate limiting, session hooks)
 - `lib/auth-client.ts` — Better Auth browser client
 - `lib/security/audit.ts` — `logSecurityEvent()` used in actions and auth hooks

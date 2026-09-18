@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { scoreMatch } from "@/lib/domain/match-score";
 
 export type StandingRow = {
   name: string;
@@ -41,27 +42,23 @@ export async function getStandings(): Promise<StandingRow[]> {
       if (p) p.matches++;
     }
 
-    let team1Sets = 0;
-    let team2Sets = 0;
-
-    if (m.set1team1 > m.set1team2) team1Sets++;
-    else if (m.set1team2 > m.set1team1) team2Sets++;
-
-    if (m.set2team1 > m.set2team2) team1Sets++;
-    else if (m.set2team2 > m.set2team1) team2Sets++;
-
-    if (m.set3team1 != null && m.set3team2 != null) {
-      if (m.set3team1 > m.set3team2) team1Sets++;
-      else if (m.set3team2 > m.set3team1) team2Sets++;
-    }
+    const set3Played = m.set3team1 != null && m.set3team2 != null;
+    const score = scoreMatch(
+      {
+        set1: [m.set1team1, m.set1team2],
+        set2: [m.set2team1, m.set2team2],
+        set3: set3Played ? [m.set3team1!, m.set3team2!] : [0, 0],
+      },
+      !set3Played
+    );
 
     for (const id of team1) {
       const p = playerMap.get(id);
-      if (p) p.sets += team1Sets;
+      if (p) p.sets += score.team1Sets;
     }
     for (const id of team2) {
       const p = playerMap.get(id);
-      if (p) p.sets += team2Sets;
+      if (p) p.sets += score.team2Sets;
     }
   }
 
