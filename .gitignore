@@ -45,5 +45,6 @@ next-env.d.ts
 .worktrees/
 
 .superpowers/
+.atl/
 
 /prisma/generated
