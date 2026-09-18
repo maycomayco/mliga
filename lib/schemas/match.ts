@@ -15,7 +15,7 @@ export const matchSchema = z
     set3team1: z.coerce.number().int().min(0, "Mínimo 0"),
     set3team2: z.coerce.number().int().min(0, "Mínimo 0"),
     // isDraw: true indica partido concluido sin 3er set con resultado 1-1.
-    // En ese caso winnerTeam se guarda como 0 (ver calculateWinnerTeam).
+    // En ese caso winnerTeam se guarda como 0.
     isDraw: z.coerce.boolean().default(false),
   })
   .refine(
@@ -53,27 +53,3 @@ export const matchWithPlayersArgs = {
 export type MatchWithPlayers = Prisma.MatchGetPayload<
   typeof matchWithPlayersArgs
 >;
-
-export function calculateWinnerTeam(data: MatchInput): number {
-  // winnerTeam = 0 significa empate: partido concluido sin 3er set, cada pareja ganó un set.
-  // En standings cada equipo suma 1 set (los scores crudos ya lo reflejan).
-  if (data.isDraw) return 0;
-
-  let team1Sets = 0;
-  let team2Sets = 0;
-
-  if (data.set1team1 > data.set1team2) team1Sets++;
-  else team2Sets++;
-
-  if (data.set2team1 > data.set2team2) team1Sets++;
-  else team2Sets++;
-
-  // Solo contar set 3 si los primeros dos sets quedaron 1-1
-  const set3Needed = team1Sets === 1 && team2Sets === 1;
-  if (set3Needed) {
-    if (data.set3team1 > data.set3team2) team1Sets++;
-    else team2Sets++;
-  }
-
-  return team1Sets > team2Sets ? 1 : 2;
-}

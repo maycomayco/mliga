@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
-import { matchSchema, calculateWinnerTeam } from "@/lib/schemas/match";
+import { matchSchema } from "@/lib/schemas/match";
+import { scoreMatch } from "@/lib/domain/match-score";
 import { auth } from "@/lib/auth";
 import { logSecurityEvent } from "@/lib/security/audit";
 
@@ -64,12 +65,6 @@ function parseMatchFormData(formData: FormData) {
   };
 }
 
-function set3Needed(data: { set1team1: number; set1team2: number; set2team1: number; set2team2: number }) {
-  const team1WonSet1 = data.set1team1 > data.set1team2;
-  const team1WonSet2 = data.set2team1 > data.set2team2;
-  return team1WonSet1 !== team1WonSet2;
-}
-
 export async function createMatch(
   _prevState: ActionState,
   formData: FormData
@@ -84,9 +79,14 @@ export async function createMatch(
   }
 
   const data = result.data;
-  // winnerTeam = 0 cuando isDraw: cada equipo se lleva 1 punto (un set ganado cada uno)
-  const winnerTeam = calculateWinnerTeam(data);
-  const saveSet3 = !data.isDraw && set3Needed(data);
+  const score = scoreMatch(
+    {
+      set1: [data.set1team1, data.set1team2],
+      set2: [data.set2team1, data.set2team2],
+      set3: [data.set3team1, data.set3team2],
+    },
+    data.isDraw
+  );
 
   await prisma.match.create({
     data: {
@@ -99,9 +99,9 @@ export async function createMatch(
       set1team2: data.set1team2,
       set2team1: data.set2team1,
       set2team2: data.set2team2,
-      set3team1: saveSet3 ? data.set3team1 : null,
-      set3team2: saveSet3 ? data.set3team2 : null,
-      winnerTeam,
+      set3team1: score.set3Played ? data.set3team1 : null,
+      set3team2: score.set3Played ? data.set3team2 : null,
+      winnerTeam: score.winnerTeam,
     },
   });
 
@@ -131,9 +131,14 @@ export async function updateMatch(
   }
 
   const data = result.data;
-  // winnerTeam = 0 cuando isDraw: cada equipo se lleva 1 punto (un set ganado cada uno)
-  const winnerTeam = calculateWinnerTeam(data);
-  const saveSet3 = !data.isDraw && set3Needed(data);
+  const score = scoreMatch(
+    {
+      set1: [data.set1team1, data.set1team2],
+      set2: [data.set2team1, data.set2team2],
+      set3: [data.set3team1, data.set3team2],
+    },
+    data.isDraw
+  );
 
   await prisma.match.update({
     where: { id },
@@ -147,9 +152,9 @@ export async function updateMatch(
       set1team2: data.set1team2,
       set2team1: data.set2team1,
       set2team2: data.set2team2,
-      set3team1: saveSet3 ? data.set3team1 : null,
-      set3team2: saveSet3 ? data.set3team2 : null,
-      winnerTeam,
+      set3team1: score.set3Played ? data.set3team1 : null,
+      set3team2: score.set3Played ? data.set3team2 : null,
+      winnerTeam: score.winnerTeam,
     },
   });
 

@@ -27,7 +27,7 @@ const users: {
     email: "maycobarale@gmail.com",
     name: "Mayco",
     username: "mayco",
-    password: "0112358132",
+    password: "011235813",
     role: Role.ADMIN,
   },
   {
